@@ -1,8 +1,21 @@
+import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module.js';
+import { Logger } from '@nestjs/common';
+import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { createValidationPipe } from './common/validation.pipe';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+
+  app.setGlobalPrefix('api/v1');
+  app.useGlobalPipes(createValidationPipe());
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.enableCors();
+
+  const port = Number(process.env.PORT ?? 3000);
+  await app.listen(port);
+  Logger.log(`Finap API escuchando en http://localhost:${port}/api/v1`, 'Bootstrap');
 }
-await bootstrap();
+
+void bootstrap();
