@@ -7,7 +7,8 @@ El proyecto Finap define el contrato del frontend en `docs/api/` (endpoints, tip
 ## What Changes
 
 - Crear un backend NestJS en la raíz del repositorio, exponiendo la API bajo `/api/v1` según `docs/api/`.
-- Persistir los datos en Neon PostgreSQL usando Prisma como ORM con migraciones versionadas.
+- Persistir los datos en Neon PostgreSQL usando Prisma como ORM con migraciones versionadas, siguiendo el skill `neon-postgres` para el aprovisionamiento, las conexiones pooled/direct y las migraciones.
+- Aprovisionar el proyecto Neon y los entornos mediante el flujo del skill: reutilizar un `DATABASE_URL` existente o resolverlo con la CLI/MCP, guardar `DATABASE_URL` (pooled) y `DATABASE_URL_UNPOOLED` (direct) en `.env`, y usar ramas (branching) para probar migraciones y entornos de preview.
 - Implementar autenticación con JWT propio (email + password), guard global y endpoint de sesión.
 - Implementar los dominios de negocio: cuentas, movimientos, categorías, presupuestos, deudas, análisis, dashboard y asistente.
 - Calcular agregados (balance, tendencia, desglose por categoría, evolución) en el servidor sobre los movimientos persistidos.
@@ -38,5 +39,5 @@ El proyecto Finap define el contrato del frontend en `docs/api/` (endpoints, tip
 - **Código**: nuevo servicio backend (NestJS) en la raíz del repo: `src/`, `prisma/`, configuración de build y tests. No modifica `docs/` (el contrato se toma como entrada).
 - **APIs**: implementa `/api/v1` según `docs/api/endpoints.md` y `docs/api/types.md`.
 - **Dependencias**: `@nestjs/*`, `@prisma/client`, `prisma`, `@nestjs/jwt`, `bcrypt`, `class-validator`, `class-transformer`, `@nestjs/swagger` (opcional), entre otras.
-- **Infraestructura**: requiere `DATABASE_URL` de Neon y `JWT_SECRET`; opcionalmente credenciales de proveedor LLM para el asistente.
+- **Infraestructura**: requiere `DATABASE_URL` (pooled) y `DATABASE_URL_UNPOOLED` (direct, para migraciones) de Neon y `JWT_SECRET`; opcionalmente credenciales de proveedor LLM para el asistente. El aprovisionamiento y el diagnóstico de Neon se guían por el skill `neon-postgres`.
 - **Compatibilidad**: el backend debe respetar los tipos de `src/services/types.ts` referidos en `docs/api/types.md`.
