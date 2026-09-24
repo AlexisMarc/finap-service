@@ -1,13 +1,13 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { AnalyticsService } from './analytics.service';
-import { QueryByCategoryDto, QueryEvolutionDto, QueryRangeDto } from './dto/query-analytics.dto';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { AnalyticsService } from './analytics.service.js';
+import { QueryByCategoryDto, QueryEvolutionDto, QueryRangeDto } from './dto/query-analytics.dto.js';
+import { CurrentUser } from '../common/decorators/current-user.decorator.js';
 import type {
   AnalysisEvolutionDto,
   AnalysisSummaryDto,
   AuthUser,
   CategoryBreakdownDto,
-} from '../common/api-types';
+} from '../common/api-types.js';
 
 @Controller('analysis')
 export class AnalysisController {

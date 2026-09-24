@@ -1,9 +1,9 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
-import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
-import { unauthorized } from '../api-error';
-import type { AuthUser } from '../api-types';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator.js';
+import { unauthorized } from '../api-error.js';
+import type { AuthUser } from '../api-types.js';
 
 interface GuardRequest {
   headers: Record<string, string | string[] | undefined>;

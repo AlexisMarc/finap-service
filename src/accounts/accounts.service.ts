@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { notFound } from '../common/api-error';
-import { mapAccount, mapUser } from '../common/serializers';
-import type { AccountDto, Currency, UserDto } from '../common/api-types';
-import type { UpdateMeDto } from './dto/update-me.dto';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { notFound } from '../common/api-error.js';
+import { mapAccount, mapUser } from '../common/serializers.js';
+import type { AccountDto, Currency, UserDto } from '../common/api-types.js';
+import type { UpdateMeDto } from './dto/update-me.dto.js';
 
 @Injectable()
 export class AccountsService {

@@ -1,5 +1,5 @@
 import { IsIn, IsOptional, IsString, IsUrl, MinLength } from 'class-validator';
-import type { Currency } from '../../common/api-types';
+import type { Currency } from '../../common/api-types.js';
 
 export class UpdateMeDto {
   @IsOptional()

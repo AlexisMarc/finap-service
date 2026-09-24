@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { validateEnv } from './config/env.validation';
-import { PrismaModule } from './prisma/prisma.module';
-import { AuthModule } from './auth/auth.module';
-import { AccountsModule } from './accounts/accounts.module';
-import { CategoriesModule } from './categories/categories.module';
-import { TransactionsModule } from './transactions/transactions.module';
-import { BudgetsModule } from './budgets/budgets.module';
-import { DebtsModule } from './debts/debts.module';
-import { AnalyticsModule } from './analytics/analytics.module';
-import { AssistantModule } from './assistant/assistant.module';
-import { AppController } from './app.controller';
-import { AuthGuard } from './common/guards/auth.guard';
+import { validateEnv } from './config/env.validation.js';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { AuthModule } from './auth/auth.module.js';
+import { AccountsModule } from './accounts/accounts.module.js';
+import { CategoriesModule } from './categories/categories.module.js';
+import { TransactionsModule } from './transactions/transactions.module.js';
+import { BudgetsModule } from './budgets/budgets.module.js';
+import { DebtsModule } from './debts/debts.module.js';
+import { AnalyticsModule } from './analytics/analytics.module.js';
+import { AssistantModule } from './assistant/assistant.module.js';
+import { AppController } from './app.controller.js';
+import { AuthGuard } from './common/guards/auth.guard.js';
 
 @Module({
   imports: [

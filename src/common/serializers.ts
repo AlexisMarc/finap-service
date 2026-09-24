@@ -15,7 +15,7 @@ import type {
   TransactionDto,
   TransactionType,
   UserDto,
-} from './api-types';
+} from './api-types.js';
 
 export function toNumber(value: unknown): number {
   if (value === null || value === undefined) {

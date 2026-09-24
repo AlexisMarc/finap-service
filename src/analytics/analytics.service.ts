@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
-import { mapDebt, mapTransaction, toNumber } from '../common/serializers';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { mapDebt, mapTransaction, toNumber } from '../common/serializers.js';
 import type {
   AnalysisEvolutionDto,
   AnalysisPointDto,
@@ -9,7 +9,7 @@ import type {
   CategoryBreakdownDto,
   DashboardSummaryDto,
   TransactionType,
-} from '../common/api-types';
+} from '../common/api-types.js';
 
 const MONTHS_ES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 const RECENT_TRANSACTIONS_LIMIT = 5;

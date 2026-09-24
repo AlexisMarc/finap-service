@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ASSISTANT_PROVIDER } from './assistant-provider.interface';
-import type { AssistantProvider } from './assistant-provider.interface';
-import type { AskAssistantDto } from './dto/ask-assistant.dto';
+import { ASSISTANT_PROVIDER } from './assistant-provider.interface.js';
+import type { AssistantProvider } from './assistant-provider.interface.js';
+import type { AskAssistantDto } from './dto/ask-assistant.dto.js';
 
 @Injectable()
 export class AssistantService {

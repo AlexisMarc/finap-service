@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
-import { conflict, notFound, validationError } from '../common/api-error';
-import { mapBudget, toNumber } from '../common/serializers';
-import type { BudgetDto } from '../common/api-types';
-import type { CreateBudgetDto } from './dto/create-budget.dto';
-import type { UpdateBudgetDto } from './dto/update-budget.dto';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { conflict, notFound, validationError } from '../common/api-error.js';
+import { mapBudget, toNumber } from '../common/serializers.js';
+import type { BudgetDto } from '../common/api-types.js';
+import type { CreateBudgetDto } from './dto/create-budget.dto.js';
+import type { UpdateBudgetDto } from './dto/update-budget.dto.js';
 
 function monthRange(month: string): { start: Date; end: Date } {
   const [year, mon] = month.split('-').map(Number);

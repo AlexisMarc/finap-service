@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
-import { notFound, validationError } from '../common/api-error';
-import { mapTransaction } from '../common/serializers';
-import { resolvePagination } from '../common/validation.pipe';
-import type { PaginatedDto, TransactionDto, TransactionType } from '../common/api-types';
-import type { CreateTransactionDto } from './dto/create-transaction.dto';
-import type { UpdateTransactionDto } from './dto/update-transaction.dto';
-import type { QueryTransactionsDto } from './dto/query-transactions.dto';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { notFound, validationError } from '../common/api-error.js';
+import { mapTransaction } from '../common/serializers.js';
+import { resolvePagination } from '../common/validation.pipe.js';
+import type { PaginatedDto, TransactionDto, TransactionType } from '../common/api-types.js';
+import type { CreateTransactionDto } from './dto/create-transaction.dto.js';
+import type { UpdateTransactionDto } from './dto/update-transaction.dto.js';
+import type { QueryTransactionsDto } from './dto/query-transactions.dto.js';
 
 @Injectable()
 export class TransactionsService {

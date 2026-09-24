@@ -1,8 +1,8 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { AnalyticsService } from './analytics.service';
-import { QueryDashboardDto } from './dto/query-analytics.dto';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import type { AuthUser, DashboardSummaryDto } from '../common/api-types';
+import { AnalyticsService } from './analytics.service.js';
+import { QueryDashboardDto } from './dto/query-analytics.dto.js';
+import { CurrentUser } from '../common/decorators/current-user.decorator.js';
+import type { AuthUser, DashboardSummaryDto } from '../common/api-types.js';
 
 @Controller('dashboard')
 export class DashboardController {

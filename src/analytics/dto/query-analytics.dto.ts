@@ -1,5 +1,5 @@
 import { IsIn, IsISO8601, IsOptional, Matches } from 'class-validator';
-import type { TransactionType } from '../../common/api-types';
+import type { TransactionType } from '../../common/api-types.js';
 
 export class QueryRangeDto {
   @IsISO8601({}, { message: 'from inválida' })

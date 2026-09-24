@@ -1,5 +1,5 @@
 import { IsIn, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
-import type { TransactionType } from '../../common/api-types';
+import type { TransactionType } from '../../common/api-types.js';
 
 export class CreateTransactionDto {
   @IsIn(['income', 'expense', 'debt'], { message: 'type inválido' })

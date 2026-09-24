@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
-import { notFound, validationError } from '../common/api-error';
-import { mapDebt, toNumber } from '../common/serializers';
-import type { DebtDto } from '../common/api-types';
-import type { CreateDebtDto } from './dto/create-debt.dto';
-import type { UpdateDebtDto } from './dto/update-debt.dto';
-import type { CreatePaymentDto } from './dto/create-payment.dto';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { notFound, validationError } from '../common/api-error.js';
+import { mapDebt, toNumber } from '../common/serializers.js';
+import type { DebtDto } from '../common/api-types.js';
+import type { CreateDebtDto } from './dto/create-debt.dto.js';
+import type { UpdateDebtDto } from './dto/update-debt.dto.js';
+import type { CreatePaymentDto } from './dto/create-payment.dto.js';
 
 @Injectable()
 export class DebtsService {

@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import type { AuthUser, CategoryDto } from '../common/api-types';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
+import { CategoriesService } from './categories.service.js';
+import { CreateCategoryDto } from './dto/create-category.dto.js';
+import { UpdateCategoryDto } from './dto/update-category.dto.js';
+import { CurrentUser } from '../common/decorators/current-user.decorator.js';
+import type { AuthUser, CategoryDto } from '../common/api-types.js';
 
 @Controller('categories')
 export class CategoriesController {
@@ -29,6 +29,7 @@ export class CategoriesController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
   async remove(@CurrentUser() user: AuthUser, @Param('id') id: string): Promise<void> {
     await this.categoriesService.remove(user.userId, id);
   }

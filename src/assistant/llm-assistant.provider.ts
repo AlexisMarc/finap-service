@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { AssistantInput, AssistantProvider } from './assistant-provider.interface';
+import type { AssistantInput, AssistantProvider } from './assistant-provider.interface.js';
 
 interface ChatCompletionResponse {
   choices?: Array<{ message?: { content?: string } }>;

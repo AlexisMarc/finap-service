@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsIn, IsISO8601, IsInt, IsOptional, IsPositive, IsString } from 'class-validator';
-import type { TransactionType } from '../../common/api-types';
+import type { TransactionType } from '../../common/api-types.js';
 
 export class QueryTransactionsDto {
   @IsOptional()

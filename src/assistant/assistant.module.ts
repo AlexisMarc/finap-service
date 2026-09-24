@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AnalyticsModule } from '../analytics/analytics.module';
-import { AssistantController } from './assistant.controller';
-import { AssistantService } from './assistant.service';
-import { ASSISTANT_PROVIDER } from './assistant-provider.interface';
-import { RulesAssistantProvider } from './rules-assistant.provider';
-import { LlmAssistantProvider } from './llm-assistant.provider';
+import { AnalyticsModule } from '../analytics/analytics.module.js';
+import { AssistantController } from './assistant.controller.js';
+import { AssistantService } from './assistant.service.js';
+import { ASSISTANT_PROVIDER } from './assistant-provider.interface.js';
+import { RulesAssistantProvider } from './rules-assistant.provider.js';
+import { LlmAssistantProvider } from './llm-assistant.provider.js';
 
 @Module({
   imports: [AnalyticsModule],

@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Patch } from '@nestjs/common';
-import { AccountsService } from './accounts.service';
-import { UpdateMeDto } from './dto/update-me.dto';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import type { AuthUser, UserDto } from '../common/api-types';
+import { AccountsService } from './accounts.service.js';
+import { UpdateMeDto } from './dto/update-me.dto.js';
+import { CurrentUser } from '../common/decorators/current-user.decorator.js';
+import type { AuthUser, UserDto } from '../common/api-types.js';
 
 @Controller('me')
 export class MeController {

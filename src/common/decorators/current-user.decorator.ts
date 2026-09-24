@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import type { AuthUser } from '../api-types';
+import type { AuthUser } from '../api-types.js';
 
 interface AuthenticatedRequest {
   user?: AuthUser;

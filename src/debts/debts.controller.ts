@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { DebtsService } from './debts.service';
-import { CreateDebtDto } from './dto/create-debt.dto';
-import { UpdateDebtDto } from './dto/update-debt.dto';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import type { AuthUser, DebtDto } from '../common/api-types';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
+import { DebtsService } from './debts.service.js';
+import { CreateDebtDto } from './dto/create-debt.dto.js';
+import { UpdateDebtDto } from './dto/update-debt.dto.js';
+import { CreatePaymentDto } from './dto/create-payment.dto.js';
+import { CurrentUser } from '../common/decorators/current-user.decorator.js';
+import type { AuthUser, DebtDto } from '../common/api-types.js';
 
 @Controller('debts')
 export class DebtsController {
@@ -30,6 +30,7 @@ export class DebtsController {
   }
 
   @Post(':id/payments')
+  @HttpCode(200)
   addPayment(
     @CurrentUser() user: AuthUser,
     @Param('id') id: string,
@@ -39,6 +40,7 @@ export class DebtsController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
   async remove(@CurrentUser() user: AuthUser, @Param('id') id: string): Promise<void> {
     await this.debtsService.remove(user.userId, id);
   }

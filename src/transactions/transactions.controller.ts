@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import { TransactionsService } from './transactions.service';
-import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { QueryTransactionsDto } from './dto/query-transactions.dto';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import type { AuthUser, PaginatedDto, TransactionDto } from '../common/api-types';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query } from '@nestjs/common';
+import { TransactionsService } from './transactions.service.js';
+import { CreateTransactionDto } from './dto/create-transaction.dto.js';
+import { UpdateTransactionDto } from './dto/update-transaction.dto.js';
+import { QueryTransactionsDto } from './dto/query-transactions.dto.js';
+import { CurrentUser } from '../common/decorators/current-user.decorator.js';
+import type { AuthUser, PaginatedDto, TransactionDto } from '../common/api-types.js';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -33,6 +33,7 @@ export class TransactionsController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
   async remove(@CurrentUser() user: AuthUser, @Param('id') id: string): Promise<void> {
     await this.transactionsService.remove(user.userId, id);
   }

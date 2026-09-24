@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { conflict, notFound } from '../common/api-error';
-import { mapCategory } from '../common/serializers';
-import type { CategoryDto } from '../common/api-types';
-import type { CreateCategoryDto } from './dto/create-category.dto';
-import type { UpdateCategoryDto } from './dto/update-category.dto';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { conflict, notFound } from '../common/api-error.js';
+import { mapCategory } from '../common/serializers.js';
+import type { CategoryDto } from '../common/api-types.js';
+import type { CreateCategoryDto } from './dto/create-category.dto.js';
+import type { UpdateCategoryDto } from './dto/update-category.dto.js';
 
 @Injectable()
 export class CategoriesService {

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { AnalyticsService } from '../analytics/analytics.service';
-import type { AssistantInput, AssistantProvider } from './assistant-provider.interface';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { AnalyticsService } from '../analytics/analytics.service.js';
+import type { AssistantInput, AssistantProvider } from './assistant-provider.interface.js';
 
 function monthRange(month: string): { start: Date; end: Date } {
   const [year, mon] = month.split('-').map(Number);
@@ -45,20 +45,33 @@ export class RulesAssistantProvider implements AssistantProvider {
   }
 
   private async answerSpending(userId: string, currency: string): Promise<string> {
-    const month = currentMonth();
-    const { start, end } = monthRange(month);
-    const summary = await this.analytics.getSummary(
-      userId,
-      start.toISOString().slice(0, 10),
-      end.toISOString().slice(0, 10),
-    );
+    let summary = await this.summaryForMonth(userId, currentMonth());
+
+    if (summary.categories.length === 0) {
+      const latest = await this.prisma.transaction.findFirst({
+        where: { userId, type: 'expense' },
+        orderBy: { date: 'desc' },
+      });
+      if (latest) {
+        summary = await this.summaryForMonth(userId, latest.date.toISOString().slice(0, 7));
+      }
+    }
 
     const top = summary.categories[0];
     const remaining = summary.income - summary.expense;
     if (!top) {
-      return `Este mes no registras gastos. Te quedan ${this.money(remaining, currency)}.`;
+      return `Aún no registras gastos. Te quedan ${this.money(remaining, currency)}.`;
     }
     return `${top.name} (${top.percentage}%). Te quedan ${this.money(remaining, currency)}.`;
+  }
+
+  private async summaryForMonth(userId: string, month: string) {
+    const { start, end } = monthRange(month);
+    return this.analytics.getSummary(
+      userId,
+      start.toISOString().slice(0, 10),
+      end.toISOString().slice(0, 10),
+    );
   }
 
   private money(value: number, currency: string): string {
