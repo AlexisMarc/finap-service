@@ -1,17 +1,9 @@
 import 'reflect-metadata';
-import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
-import { AppModule } from './app.module.js';
-import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
-import { createValidationPipe } from './common/validation.pipe.js';
+import { createApp } from './bootstrap.js';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
-
-  app.setGlobalPrefix('api/v1');
-  app.useGlobalPipes(createValidationPipe());
-  app.useGlobalFilters(new HttpExceptionFilter());
-  app.enableCors();
+  const app = await createApp();
 
   const port = Number(process.env.PORT ?? 3000);
   await app.listen(port);
