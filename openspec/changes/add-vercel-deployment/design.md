@@ -28,12 +28,12 @@ Restricciones de Vercel relevantes:
 
 ## Decisions
 
-### 1. Entrypoint catch-all `api/[...path].ts`
+### 1. Entrypoint `api/index.ts` + rewrite
 
-Exponer un único handler serverless en `api/[...path].ts` que arranca/recupera la app Nest y delega la petición. Así `/api/v1/...` llega tal cual (Vercel pasa la ruta original) y el prefijo global `api/v1` no necesita reescrituras.
+Exponer la app NestJS desde una única función `api/index.ts` y enrutar todo `/api/*` hacia ella con un rewrite en `vercel.json` (`/api/(.*) -> /api`). Vercel conserva la ruta original en `req.url`, por lo que el prefijo global `api/v1` no cambia.
 
-- **Por qué**: evita `rewrites` frágiles y conserva las rutas exactas del contrato.
-- **Alternativa**: `api/index.ts` + rewrite `/(.*) -> /api` — descartada porque altera la ruta que ve Nest.
+- **Por qué**: el directorio `api` de Vercel **no soporta catch-all multi-segmento** (`api/[...path].ts` generó una ruta de un solo segmento y devolvía 404 de plataforma). El rewrite es el patrón soportado.
+- **Alternativa**: `api/[...path].ts` (catch-all) — descartada tras comprobar que no captura `/api/v1/...`.
 
 ### 2. Bootstrap cacheado
 
@@ -72,10 +72,10 @@ Recomendar la integración Neon↔Vercel para que cada Preview Deployment reciba
 
 ### 7. Empaquetado y versión de Node
 
-Fijar la versión de Node con `engines` en `package.json` (20.x) y configurar `vercel.json` con `functions.maxDuration` para la función catch-all. El trazado de dependencias de Vercel (nft) incluye `src/`, el cliente Prisma y `@prisma/adapter-pg`/`pg`.
+Fijar la versión de Node con `engines` en `package.json` (**24.x**) y configurar `vercel.json` con `functions.maxDuration` para el handler. El trazado de dependencias de Vercel (nft) incluye `src/`, el cliente Prisma y `@prisma/adapter-pg`/`pg`.
 
-- **Por qué**: evitar divergencias de runtime y timeouts en arranques fríos.
-- **Alternativa**: runtime por defecto — descartada por reproducibilidad.
+- **Por qué**: Vercel marca Node 20.x como deprecado (fallará tras 2026-10-01) y exige 24.x. El build de Vercel emite la metadata de decoradores (`design:paramtypes`) que Nest necesita.
+- **Alternativa**: Node 20.x (diseño original) — descartada por la deprecación de la plataforma.
 
 ## Risks / Trade-offs
 
@@ -85,6 +85,9 @@ Fijar la versión de Node con `engines` en `package.json` (20.x) y configurar `v
 - **Migraciones manuales**: olvidarlas provoca deriva de esquema → script dedicado y paso previo documentado en el flujo de despliegue/CI.
 - **Desalineación de variables en preview**: la preview podría apuntar a producción → verificar el alcance de cada variable y preferir ramas de Neon por preview.
 - **CORS mal configurado**: puede bloquear el frontend → `CORS_ORIGINS` por entorno y prueba en preview.
+- **Metadata de decoradores en herramientas locales**: `vercel dev`/esbuild no emiten `design:paramtypes`, así que la app no resuelve inyección allí; el build de Vercel sí la emite y el despliegue funciona. Verificar siempre contra un Preview/Production desplegado, no solo `vercel dev`.
+- **Protección de despliegues**: Vercel Authentication puede bloquear el acceso público → desactivarla para producción o usar un bypass de automatización.
+- **Producción sin datos**: la rama de producción requiere migración y seed explícitos → ejecutar `db:migrate:deploy` y `db:seed` antes de verificar.
 
 ## Migration Plan
 

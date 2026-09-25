@@ -97,3 +97,57 @@ En `src/prisma/prisma.service.ts` se ejecuta `dns.setDefaultResultOrder('ipv4fir
 | El primer request tarda | La computa de Neon estaba suspendida (scale-to-zero) | Es normal: el arranque en frío tarda unos cientos de ms. |
 | `prisma migrate` no conecta pero la app sí | El CLI usa el engine binario (no el resolver de Node) | Ejecuta `npx prisma migrate deploy` con la red en IPv4, o usa la conexión directa. |
 
+## Despliegue en Vercel
+
+La API se despliega como **función serverless** que arranca NestJS y sirve `/api/v1` con el mismo contrato.
+
+### Estructura
+
+- `api/index.ts`: handler serverless; inicializa la app una vez y la reutiliza entre invocaciones.
+- `vercel.json`: `outputDirectory: public`, rewrite `/api/(.*) -> /api` y `functions.maxDuration`.
+- `public/index.html`: página estática mínima (Vercel requiere un directorio de salida).
+
+### Variables de entorno (por entorno)
+
+| Variable | Production | Preview / Development |
+|----------|------------|-----------------------|
+| `DATABASE_URL` (pooled) | rama `production` | rama `dev` |
+| `DATABASE_URL_UNPOOLED` (direct) | rama `production` | rama `dev` |
+| `JWT_SECRET`, `JWT_EXPIRES_IN` | propio | propio |
+| `CORS_ORIGINS` | orígenes del frontend (coma) | opcional |
+
+Sin `CORS_ORIGINS` en producción no se autoriza cross-origin; en preview/local se permite. `LLM_API_KEY`/`LLM_BASE_URL`/`LLM_MODEL` son opcionales.
+
+La conexión usa `@prisma/adapter-pg` con un `pg.Pool` y `attachDatabasePool` de `@vercel/functions` en Fluid compute.
+
+### Migraciones (fuera del runtime)
+
+Nunca en el arranque de la función. Antes de promover, contra la rama correspondiente:
+
+```bash
+DATABASE_URL_UNPOOLED="<direct-url>" npm run db:migrate:deploy
+DATABASE_URL="<pooled-url>" npx prisma db seed   # datos de ejemplo
+```
+
+### Despliegue
+
+```bash
+vercel link            # una vez
+vercel deploy          # preview
+vercel deploy --prod   # producción
+```
+
+### Previews con ramas de Neon
+
+Recomendado: la integración **Neon↔Vercel** crea una rama por Preview. Respaldo (el usado aquí): variables de **Preview** apuntando a la rama `dev`, de modo que las previews no escriben en producción.
+
+### Protección de despliegues
+
+Por defecto, los despliegues pueden exigir **Vercel Authentication**. Para servir la API públicamente, desactívala en *Project Settings → Deployment Protection* o usa un *Protection Bypass for Automation*.
+
+### Rollback
+
+- Promueve un despliegue anterior (`vercel rollback`).
+- Si hubo migración, restaura con el historial de Neon (instant restore / rama desde punto en el tiempo).
+
+
