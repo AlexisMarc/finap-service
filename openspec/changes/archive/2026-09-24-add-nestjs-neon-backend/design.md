@@ -45,7 +45,7 @@ Seguir el flujo de setup del skill: si ya existe un `DATABASE_URL` (prompt, ento
 
 ### 3. Prisma + estrategia de conexión Neon (pooled vs direct)
 
-Usar Prisma como ORM y migraciones. Aplicación y runtime usan la conexión **pooled** (`DATABASE_URL`, hostname con `-pooler`); las migraciones, dumps y tareas de sesión usan la conexión **direct** (`DATABASE_URL_UNPOOLED`), mapeada a `directUrl` de Prisma. La elección de driver depende del runtime: en un servidor Node de larga duración (NestJS típico) usar `node-postgres` con pool reutilizado; en entornos serverless/edge, usar `@prisma/adapter-neon` + `@neondatabase/serverless`.
+Usar Prisma como ORM y migraciones. Aplicación y runtime usan la conexión **pooled** (`DATABASE_URL`, hostname con `-pooler`); las migraciones, dumps y tareas de sesión usan la conexión **direct** (`DATABASE_URL_UNPOOLED`), mapeada a `directUrl` de Prisma. El runtime usa el **driver adapter `@prisma/adapter-pg`** (node-postgres) con un pool reutilizado, adecuado para un servidor Node de larga duración. En entornos serverless/edge la alternativa es `@prisma/adapter-neon` + `@neondatabase/serverless`.
 
 - **Por qué**: PgBouncer (transaction mode) no soporta operaciones a nivel de sesión; separar pooled y direct evita fallos silenciosos en migraciones (`prepared statement "s0" already exists`, `SET search_path` que no persiste, transacciones read-only). El skill recomienda además Drizzle para TypeScript nuevo sin elección previa; se mantiene Prisma por migraciones y tipado, aceptando la recomendación como alternativa.
 - **Alternativa**: `@neondatabase/serverless` para todo — válido solo si el runtime es serverless/edge; para un servidor de larga duración, `node-postgres`/pool estándar es más simple.
@@ -114,6 +114,7 @@ Gestionar el esquema como código (Prisma Migrate). Probar cada migración en un
 ## Risks / Trade-offs
 
 - **Pooling/Neon**: usar la conexión pooled para migraciones falla de forma no evidente → pooled (`DATABASE_URL`) solo para tráfico de la app; direct (`DATABASE_URL_UNPOOLED`/`directUrl`) para migraciones, dumps y sesiones.
+- **Resolución IPv6 de Neon**: el endpoint publica AAAA y una red sin salida IPv6 al 5432 produce `P1001` aun con la base activa → el runtime con `@prisma/adapter-pg` ejecuta `dns.setDefaultResultOrder('ipv4first')` (igual en el seed); verificado que IPv4 responde y IPv6 no.
 - **Cold start (scale-to-zero)**: la primera consulta tras suspensión tarda cientos de ms → tolerar el pico inicial o ajustar el timeout de suspensión si la latencia importa.
 - **Precisión monetaria**: mezclar `number` de JS con `Decimal` puede perder precisión → mantener `Decimal` en persistencia y redondear solo al serializar.
 - **`Debt.paid` desnormalizado**: puede desincronizarse → actualizar siempre dentro de una transacción que también crea `DebtPayment`, y ofrecer recomputación.

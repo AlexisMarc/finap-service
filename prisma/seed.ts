@@ -1,7 +1,13 @@
+import { setDefaultResultOrder } from 'node:dns';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient, TransactionType, Currency } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
-const prisma = new PrismaClient();
+setDefaultResultOrder('ipv4first');
+
+const prisma = new PrismaClient({
+  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+});
 
 const USER_ID = 'u_1';
 const EMAIL = 'marcos@finap.app';

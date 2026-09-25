@@ -82,3 +82,18 @@ src/
   assistant/     proveedor determinista y LLM opcional
 prisma/          schema.prisma, migraciones y seed
 ```
+
+## Conexión a Neon
+
+La aplicación usa Prisma con el **driver adapter `@prisma/adapter-pg`** (node-postgres) en lugar del engine binario. Así el pool reutiliza conexiones y el runtime usa el resolver DNS de Node, lo que permite forzar IPv4.
+
+En `src/prisma/prisma.service.ts` se ejecuta `dns.setDefaultResultOrder('ipv4first')`: Neon también publica direcciones IPv6 y algunas redes no enrutan IPv6 al puerto 5432, lo que provoca `P1001: Can't reach database server`. Forzando IPv4 se evita. El seed hace lo mismo.
+
+### Solución de problemas
+
+| Síntoma | Causa probable | Solución |
+|---------|----------------|----------|
+| `P1001: Can't reach database server ...:5432` | La red no enruta IPv6 al 5432 y se elige AAAA | Ya se fuerza `ipv4first` en `PrismaService` y `seed.ts`. Verifica salida IPv4 con `node -e "require('dns').resolve4('<host>',console.log)"`. |
+| El primer request tarda | La computa de Neon estaba suspendida (scale-to-zero) | Es normal: el arranque en frío tarda unos cientos de ms. |
+| `prisma migrate` no conecta pero la app sí | El CLI usa el engine binario (no el resolver de Node) | Ejecuta `npx prisma migrate deploy` con la red en IPv4, o usa la conexión directa. |
+
